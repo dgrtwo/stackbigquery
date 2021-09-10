@@ -1,7 +1,3 @@
----
-output: github_document
----
-
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 
@@ -11,9 +7,13 @@ output: github_document
 <!-- badges: start -->
 <!-- badges: end -->
 
-stackbigquery is a package Stack Overflow dataset on bigquery.
+stackbigquery is a package wrapping the Stack Overflow database on Google BigQuery.
 
-This is a minimal example of using [dbcooper](https://github.com/dgrtwo/dbcooper) to create a database package.
+This is a minimal example of using [dbcooper](https://github.com/dgrtwo/dbcooper) to create a database package:
+
+* Creating a connection in [connections.R](https://github.com/dgrtwo/stackbigquery/blob/master/R/connections.R)
+* Running `dbcooper::dbc_init()` on that connection in [zzz.R](https://github.com/dgrtwo/stackbigquery/blob/master/R/zzz.R)
+* Package-specific functions in [summarize.R](https://github.com/dgrtwo/stackbigquery/blob/master/R/summarize.R)
 
 ## Installation
 
