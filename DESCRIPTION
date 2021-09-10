@@ -1,0 +1,20 @@
+Package: stackbigquery
+Type: Package
+Title: Access and Analyze Stack Overflow BigQuery Database
+Version: 0.0.0.9000
+Authors@R: c(person("David", "Robinson", email = "admiral.david@gmail.com", role = c("aut", "cre")))
+Maintainer: David Robinson <admiral.david@gmail.com>
+Description: Wraps the Stack Overflow BigQuery Database with accessor functions.
+    This serves as an example of the 'dbcooper' package for creating a
+    database-specific package.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Imports:
+    DBI,
+    dplyr,
+    dbcooper,
+    bigrquery,
+    dbplyr
+Suggests: 
+    ggplot2
+RoxygenNote: 7.1.1

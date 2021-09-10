@@ -1,0 +1,124 @@
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%",
+  cache = TRUE,
+  cache.path = "README-cache/"
+)
+```
+
+# stackbigquery
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+stackbigquery is a package wrapping the Stack Overflow database on Google BigQuery.
+
+This is a minimal example of using [dbcooper](https://github.com/dgrtwo/dbcooper) to create a database package:
+
+* Creating a connection in [connections.R](https://github.com/dgrtwo/stackbigquery/blob/master/R/connections.R)
+* Running `dbcooper::dbc_init()` on that connection in [zzz.R](https://github.com/dgrtwo/stackbigquery/blob/master/R/zzz.R)
+* Package-specific functions in [summarize.R](https://github.com/dgrtwo/stackbigquery/blob/master/R/summarize.R)
+
+## Installation
+
+You can install the development version of stackbigquery from GitHub with:
+
+``` r
+devtools::install_github("dgrtwo/stackbigquery")
+```
+
+You'll also need to create a Google Cloud project with BigQuery enabled, and set two environment variables in your `.Renviron` file (see [bigrquery](https://bigrquery.r-dbi.org/)).
+
+```
+BIGQUERY_BILLING_PROJECT=<your_project>
+BIGQUERY_EMAIL=<your_email>
+```
+
+The first time you use the package, it may prompt you to authenticate (see the [gargle](https://gargle.r-lib.org/) package for more).
+
+## Examples
+
+Once you've loaded the stackbigquery package, you can use functions prefixed with `stack_` to access the database. This includes
+
+* `stack_list()` to list tables in the database
+* `stack_query()` to run a SQL query (and get a remote dbplyr table)
+
+```{r posts_questions}
+library(dplyr)
+library(stackbigquery)
+
+stack_list()
+stack_query("SELECT * FROM tags ORDER BY count DESC")
+```
+
+You can also use autocomplete-friendly table accessors:
+
+```{r}
+stack_posts_questions()
+```
+
+These can be used with dbplyr to do joins or summaries.
+
+```{r by_month}
+by_month <- stack_posts_questions() %>%
+  group_by(month = DATE_TRUNC(DATE(creation_date), MONTH)) %>%
+  summarize(n_questions = n(),
+            avg_score = mean(score),
+            avg_answers = mean(answer_count)) %>%
+  collect()
+
+by_month
+```
+
+```{r}
+library(ggplot2)
+theme_set(theme_light())
+
+by_month %>%
+  filter(n_questions >= 100) %>%
+  ggplot(aes(month, avg_score)) +
+  geom_line() +
+  labs(y = "Average score of Stack Overflow questions")
+```
+
+### Summarize tags
+
+As a database-specific package, stackbigquery also offers useful verbs for doing common operations on the data.
+
+For instance, `summarize_tags` takes a (potentially grouped) version of `stack_posts_questions`, joins it to the tags table, and aggregates the frequency by tag.
+
+```{r by_month_tag}
+by_month_tag <- stack_posts_questions() %>%
+    group_by(month = DATE_TRUNC(DATE(creation_date), MONTH)) %>%
+    summarize_tags(c("javascript", "java", "python", "c#", "php", "c++"))
+
+by_month_tag
+```
+
+```{r by_month_tag_plot, dependson = "by_month_tag"}
+library(ggplot2)
+library(forcats)
+
+by_month_tag %>%
+  filter(month != max(month),
+         month != min(month)) %>%
+  arrange(month) %>%
+  mutate(tag = fct_reorder(tag, -percent, last)) %>%
+  ggplot(aes(month, percent, color = tag)) +
+  geom_line() +
+  scale_y_continuous(labels = scales::percent_format()) +
+  expand_limits(y = 0) +
+  labs(x = "Time",
+         y = "% of Stack Overflow questions")
+```
+
+### Code of Conduct
+
+Please note that the 'stackbigquery' project is released with a
+[Contributor Code of Conduct](CODE_OF_CONDUCT.md).
+By contributing to this project, you agree to abide by its terms.
