@@ -11,9 +11,9 @@ stackbigquery is a package wrapping the Stack Overflow database on Google BigQue
 
 This is a minimal example of using [dbcooper](https://github.com/dgrtwo/dbcooper) to create a database package:
 
-* Creating a connection in [connections.R](https://github.com/dgrtwo/stackbigquery/blob/master/R/connections.R)
-* Running `dbcooper::dbc_init()` on that connection in [zzz.R](https://github.com/dgrtwo/stackbigquery/blob/master/R/zzz.R)
-* Package-specific functions in [summarize.R](https://github.com/dgrtwo/stackbigquery/blob/master/R/summarize.R)
+* Create a connection in [connections.R](https://github.com/dgrtwo/stackbigquery/blob/master/R/connections.R)
+* Run `dbcooper::dbc_init()` on that connection in [zzz.R](https://github.com/dgrtwo/stackbigquery/blob/master/R/zzz.R)
+* Put package-specific functions in other files like  [summarize.R](https://github.com/dgrtwo/stackbigquery/blob/master/R/summarize.R)
 
 ## Installation
 
@@ -210,6 +210,4 @@ by_month_tag %>%
 
 ### Code of Conduct
 
-Please note that the 'stackbigquery' project is released with a
-[Contributor Code of Conduct](CODE_OF_CONDUCT.md).
-By contributing to this project, you agree to abide by its terms.
+Please note that the 'stackbigquery' project is released with a [Contributor Code of Conduct](CODE_OF_CONDUCT.md). By contributing to this project, you agree to abide by its terms.
